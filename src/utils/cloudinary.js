@@ -22,4 +22,4 @@ const uplodOnCloudinary = async (file) => {
 	}
 }
 
-export {uplodOnCloudinary};
+export { uplodOnCloudinary };
