@@ -19,9 +19,18 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const avatarImgPath = req.files?.avatar[0]?.path;
-    const coverImgPath = req.files?.cover[0]?.path;
-    if (!avatarImgPath) {
+	if (!avatarImgPath) {
         throw new ApiError(400, "Please upload an avatar");
+    }
+
+    let coverImgPath = "";
+    if (
+        req.files &&
+        req.files.cover &&
+        Array.isArray(req.files.cover) &&
+        req.files.cover.length > 0
+    ) {
+        coverImgPath = req.files.cover[0].path;
     }
 
     const avatar = await uplodOnCloudinary(avatarImgPath);
@@ -39,7 +48,9 @@ const registerUser = asyncHandler(async (req, res) => {
         converImage: cover?.url || "",
     });
 
-    let createdUser = User.findById(user._id).select("-password -refreshToken");
+    let createdUser = await User.findById(user._id).select(
+        "-password -refreshToken"
+    );
     if (!createdUser) {
         throw new ApiError(500, "Server Error");
     }
